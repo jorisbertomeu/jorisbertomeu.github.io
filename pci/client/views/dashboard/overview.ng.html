@@ -1,0 +1,73 @@
+<div>
+  <header>
+    <h1>Latest tests</h1>
+  </header>
+  <div class="jumbotron">
+	<table class="table table-striped"> 
+		<thead> 
+			<tr> 
+				<th></th>
+				<th></th>
+				<th>Tree</th> 
+				<th>Kernel</th> 
+				<th>Board</th> 
+				<th>Defconfig</th> 
+				<th>Tests</th> 
+				<th>Lab name</th> 
+				<th>Date</th> 
+				<th></th> 
+			</tr> 
+		</thead> 
+		<tbody>
+			<tr ng-repeat-start="test in tests">
+				<th><i class="fa fa-plus clickable" ng-click="collapseBtn($event)" data-toggle="collapse" id="row{{$index}}" data-target=".row{{$index}}"></i></th>
+				<th><i ng-click="favorite($event, test)" class="fa fa-star-o"></i></th>
+				<th>{{test.job}}</th> 
+				<td>{{test.kernel}}</td> 
+				<td>{{test.board}}</td> 
+				<td>{{test.defconfig}}</td> 
+				<td>{{test.name}} ({{test.test_set.length}})</td>
+				<td>{{test.lab_name}}</td> 
+				<td>{{test.created_on.$date | date:'yyyy-MM-dd HH:mm'}}</td>
+				<td><a href="#">More</a></td> 
+			</tr>
+			
+			<tr class="collapse row{{$index}}" ng-controller="TestController" ng-repeat-end>
+	            <td colspan=10>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Test name</th>
+						        <th>Power Min</th>
+						        <th>Power AVG</th>
+						        <th>Power Max</th>
+						        <th>Current Min</th>
+						        <th>Current Max</th>
+						        <th>Voltage Max</th>
+						        <th>Energy</th>
+						    </tr>
+						</thead>
+						<tbody>
+						    <tr ng-repeat="obj in objs">
+						    	<td>{{$index}}</td>
+						        <td>{{obj.name}}</td>
+						        <td>{{obj.power_min}}</td>
+						        <td>{{obj.power_avg}}</td>
+						        <td>{{obj.power_max}}</td>
+						        <td>{{obj.current_min}}</td>
+						        <td>{{obj.current_max}}</td>
+						        <td>{{obj.vbus_max}}</td>
+						        <td>{{obj.energy}}</td>
+						    </tr>
+						</tbody>
+					</table>
+	            </td>
+	        </tr>
+		</tbody> 
+	</table>
+	<div ng-if="!tests">
+	  <center>Loading results <i class="fa fa-cog fa-spin"></i></center>
+	</div>
+  </div>
+</div>
