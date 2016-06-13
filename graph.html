@@ -13,101 +13,119 @@
 
 	$(function() {
 
+		var config = {
+			toAdd: 1, /* Number of values to add for each ticks */
+			idxBase: 500, /* Number of values on start */
+			onStart: false /* Run chart on startup */
+		}
+
 		// We use an inline data source in the example, usually data would
 		// be fetched from a server
+		jQuery.get('http://127.0.0.1/res/data.json', function(datas) {
 
-		var data1 = [], data2 = [], data3 = [],
-			totalPoints = 300;
 
-		function getRandomInt(min, max) {
-		  return Math.floor(Math.random() * (max - min)) + min;
-		}
+			var data1 = [], data2 = [], data3 = [];
+			var idxBase = config.idxBase, idx = idxBase, toAdd = config.toAdd, updateMe = config.onStart;
 
-		function getRandomData(data, min, max) {
-
-			if (data.length > 0)
-				data = data.slice(1);
-
-			// Do a random walk
-
-			while (data.length < totalPoints) {
-
-				// var prev = data.length > 0 ? data[data.length - 1] : 50,
-				// 	y = prev + Math.random() * 10 - 5;
-
-				// if (y < 0) {
-				// 	y = 0;
-				// } else if (y > 100) {
-				// 	y = 100;
-				// }
-
-				data.push(getRandomInt(min, max));
+			function getRandomInt(min, max) {
+			  return Math.floor(Math.random() * (max - min)) + min;
 			}
 
-			// Zip the generated y values with the x values
-
-			var res = [];
-			for (var i = 0; i < data.length; ++i) {
-				res.push([i, data[i]])
-			}
-
-			return [res, data];
-		}
-
-		// Set up the control widget
-
-		var updateInterval = 30;
-		$("#updateInterval").val(updateInterval).change(function () {
-			var v = $(this).val();
-			if (v && !isNaN(+v)) {
-				updateInterval = +v;
-				if (updateInterval < 1) {
-					updateInterval = 1;
-				} else if (updateInterval > 2000) {
-					updateInterval = 2000;
+			$('#goButton').click(function() {
+				if (updateMe) {
+					updateMe = false;
+					$(this).html('Start');
+				} else {
+					updateMe = true;
+					$(this).html('Stop');
+					update();
 				}
-				$(this).val("" + updateInterval);
-			}
-		});
-		vbus = getRandomData(data1, 450, 550); //VBUS
-		data1 = vbus[1];
-		vcc_3v3 = getRandomData(data2, 180, 220); //VCC_3V3
-		data2 = vcc_3v3[1];
-		vcc_1v8 = getRandomData(data3, 45, 55); //VCC_1V8
-		data3 = vcc_1v8[1];
-		var plot = $.plot("#placeholder", [ vbus[0], vcc_3v3[0], vcc_1v8[0] ], {
-			series: {
-				shadowSize: 0	// Drawing is faster without shadows
-			},
-			yaxis: {
-				min: 0,
-				max: 600
-			},
-			xaxis: {
-				show: false
-			}
-		});
+			});
 
-		function update() {
-			vbus = getRandomData(data1, 450, 550);
+			function reinit() {
+				data1 = [];
+				data2 = [];
+				data3 = [];
+				idx = idxBase;
+				vbus = getRandomData(data1, 0, idx, 100); //VBUS
+				data1 = vbus[1];
+				vcc_3v3 = getRandomData(data2, 0, idx, 50); //VCC_3V3
+				data2 = vcc_3v3[1];
+				vcc_1v8 = getRandomData(data3, 0, idx, 25); //VCC_1V8
+				data3 = vcc_1v8[1];
+			}
+
+			$('#reinitButton').click(function() {
+				reinit();
+			});
+
+			function getRandomData(data, start, end, percent) {
+				console.log('before : ' + data.length);
+				if (data.length > 0)
+					data = data.slice(toAdd * 2);
+				console.log('after : ' + data.length);
+				$.each(datas, function(i, elem) {
+					if (i >= start && i <= start + end)
+						data.push(elem * percent / 100);
+				});
+				var res = [];
+				for (var i = 0; i < data.length; ++i) {
+					res.push([i, data[i]])
+				}
+				return [res, data];
+			}
+
+			var updateInterval = 30;
+			$("#updateInterval").val(updateInterval).change(function () {
+				var v = $(this).val();
+				if (v && !isNaN(+v)) {
+					updateInterval = +v;
+					if (updateInterval < 1) {
+						updateInterval = 1;
+					} else if (updateInterval > 2000) {
+						updateInterval = 2000;
+					}
+					$(this).val("" + updateInterval);
+				}
+			});
+			vbus = getRandomData(data1, 0, idx, 100); //VBUS
 			data1 = vbus[1];
-			vcc_3v3 = getRandomData(data2, 180, 220);
+			vcc_3v3 = getRandomData(data2, 0, idx, 50); //VCC_3V3
 			data2 = vcc_3v3[1];
-			vcc_1v8 = getRandomData(data3, 45, 55); //VCC_1V8
+			vcc_1v8 = getRandomData(data3, 0, idx, 25); //VCC_1V8
 			data3 = vcc_1v8[1];
-			plot.setData([ vbus[0], vcc_3v3[0], vcc_1v8[0] ]);
+			var plot = $.plot("#placeholder", [ vbus[0], vcc_3v3[0], vcc_1v8[0] ], {
+				series: {
+					shadowSize: 0	// Drawing is faster without shadows
+				},
+				yaxis: {
+					min: 0,
+					max: 30000
+				},
+				xaxis: {
+					show: false
+				}
+			});
 
-			// Since the axes don't change, we don't need to call plot.setupGrid()
+			function update() {
+				idx += toAdd;
+				if (idx >= datas.length)
+					idx = 0;
+				vbus = getRandomData(data1, idx, toAdd, 100);
+				data1 = vbus[1];
+				vcc_3v3 = getRandomData(data2, idx, toAdd, 50);
+				data2 = vcc_3v3[1];
+				vcc_1v8 = getRandomData(data3, idx, toAdd, 25); //VCC_1V8
+				data3 = vcc_1v8[1];
+				plot.setData([ vbus[0], vcc_3v3[0], vcc_1v8[0] ]);
+				plot.draw();
+				if (updateMe)
+					setTimeout(update, updateInterval);
+			}
 
-			plot.draw();
-			setTimeout(update, updateInterval);
-		}
-
-		update();
-
-		// Add the Flot version string to the footer
-
-		$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+			update();
+			$("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+		});
 	});
 
 	</script>
@@ -123,9 +141,7 @@
 		<div class="demo-container">
 			<div id="placeholder" class="demo-placeholder"></div>
 		</div>
-
-		<p>You can update a chart periodically to get a real-time effect by using a timer to insert the new data in the plot and redraw it.</p>
-
+		<p><button id="goButton">Start</button> <button id="reinitButton">Reinit</button></p>
 		<p>Time between updates: <input id="updateInterval" type="text" value="" style="text-align: right; width:5em"> milliseconds</p>
 
 	</div>
