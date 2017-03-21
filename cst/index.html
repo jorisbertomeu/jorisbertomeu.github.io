@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="CST" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="CST" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="CST" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="CST" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Computer Store Tycoon</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
+  <link rel="stylesheet" href="bower_components/angular-ui-notification/dist/angular-ui-notification.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="app.css">
+  <!-- Bootstrap Core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="css/simple-sidebar.css" rel="stylesheet">
+  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body ng-controller="mainCtrl">
+  <div id="wrapper">
+     <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        CST
+                    </a>
+                </li>
+                <li>
+                    <a href="#!/dashboard"><i class="fa fa-tachometer"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="#!/stock"><i class="fa fa-server"></i> Mon Stock</a>
+                </li>
+                <li>
+                    <a href="#!/work"><i class="fa fa-tasks"></i> Travail à faire</a>
+                </li>
+                <li>
+                    <a href="#!/customersTasks"><i class="fa fa-user"></i> Demandes client</a>
+                </li>
+                <li>
+                    <a href="#!/customers"><i class="fa fa-users"></i> Clients</a>
+                </li>
+                <li>
+                    <a href="#!/management"><i class="fa fa-cubes"></i> Logistique</a>
+                </li>
+                <li>
+                    <a href="#!/myStore"><i class="fa fa-tachometer"></i> Mon magasin</a>
+                </li>
+                <li>
+                    <a href="#!/settings"><i class="fa fa-cog"></i> Paramètres</a>
+                </li>
+                <li>
+                    <a ng-click="system._.newClient()"><i class="fa fa-cubes"></i> Nouveau client</a>
+                </li>
+                <li>
+                    <a ng-click="system._.save()"><i class="fa fa-save"></i> Sauvegarder</a>
+                </li>
+            </ul>
+            <div class="utilPanel" style="text-align: center;">
+              <span class="pull-left">{{system.bank.solde | currency:"€"}} (<i class="fa fa-caret-up"></i>)</span>
+              <span class="pull-right">
+                <a class="noLink"><i ng-click="system._.pausePressed()" class="fa fa-pause" ng-style="{'color': (system._.timer.speed.pause) ? 'green': ''}"></i> </a>
+                <a class="noLink"><i ng-click="system._.playPressed()" class="fa fa-play" ng-style="{'color': (system._.timer.speed.play) ? 'green': ''}"></i> </a>
+                <a class="noLink"><i ng-click="system._.forwardPressed()" class="fa fa-forward" ng-style="{'color': (system._.timer.speed.forward) ? 'green': ''}"></i> </a>
+                <a class="noLink"><i ng-click="system._.fastForwardPressed()" class="fa fa-fast-forward" ng-style="{'color': (system._.timer.speed.fastForward) ? 'green': ''}"></i> </a> - {{system._.timer.getHour()}}</span><br><br>
+                <i class="{{system._.weather.class}} wi-fw" style="font-size: 25px; width: 100%"></i><br>28.5°C<br>
+                Nous sommes le <b>{{system._.timer.getDate()}}</b><br>
+                <span class="pull-left" ng-style="{'color': (system._.routines.getPopularity() > 80) ? '#27ae60' : (system._.routines.getPopularity() > 35) ? '#d35400' : '#c0392b'}"><b>{{system._.routines.getPopularity()}}%</b></span>
+                <span class="pull-right">
+                  ???
+                </span>
+            </div>
+        </div>
+        <div id="page-content-wrapper" style="width: 83% !important">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12" ng-view>
+                      
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="backdrop" ng-show="system._.currentTask.active || system._.dialoging.status">
+          <div style="margin-top: 20px; opacity: .85" class="col-lg-4 col-lg-offset-4" ng-show="system._.dialoging.status">
+            <div class="well" style="text-align: center;">
+              <img class="img-circle" src="{{system._.dialoging.people.photo}}"><br>
+              <b>{{system._.dialoging.people.name}}</b><br>
+              {{system._.dialoging.people.email}}
+            </div>
+            <div class="well">
+              <div class="col-lg-3" style="text-align: right;"><b>{{system._.dialoging.people.name}}</b> : </div>
+              <div class="col-lg-9" style="text-align: justify;">{{system._.dialoging.text}}</div>
+              &nbsp;
+            </div>
+             <div class="well">
+              <button class="btn btn-primary btn-block" ng-repeat="res in system._.dialoging.response" ng-click="system._.dialoging.nextStep(res.idx)">{{res.libelle}}</button>
+              <button class="btn btn-warning btn-block" ng-show="!system._.dialoging.finished" ng-disabled="!system._.dialoging.dialog.cancel" ng-click="system._.dialoging.nextStep(res.idx)">Couper court à la discussion</button>
+              <button class="btn btn-warning btn-block" ng-show="system._.dialoging.finished" ng-click="system._.dialoging.nextStep(-1)">Fermer</button>
+             </div>
+          </div>
+        </div>
+        <div class="bottomPanel" ng-show="system._.currentTask.active">
+          <div class="progress" style="width:30%; margin-left: 35%">
+            <div class="progress-bar progress-bar-striped active" role="progressbar"
+            aria-valuenow="{{system._.currentTask.percentage}}" aria-valuemin="0" aria-valuemax="100" ng-style="{'width': system._.currentTask.percentage + '%'}">
+              {{system._.currentTask.percentage}}%
+            </div>
+          </div>
+          <!-- Récupération d'un colis d'un fournisseur -->
+        </div>
+        <div class="rightPanel">
+          <div class="rightWidget">
+            <div class="title">
+              <span class="pull-left"><a href="#"><i class="fa fa-envelope"></i> </a></span>
+              Derniers mails
+            </div>
+            <ul class="sidebar-nav" style="position:relative !important;">
+              <li><a href="#"><b>Amazon</b> - Votre commande N°CX56 ...</a></li>
+              <li><a href="#"><b>Amazon</b> - Votre commande N°CX56 ...</a></li>
+              <li><a href="#"><b>Amazon</b> - Votre commande N°CX56 ...</a></li>
+              <li><a href="#"><b>Amazon</b> - Votre commande N°CX56 ...</a></li>
+              <li><a href="#"><b>Amazon</b> - Votre commande N°CX56 ...</a></li>
+              <li><a href="#"><b>Amazon</b> - Votre commande N°CX56 ...</a></li>
+            </ul>
+          </div>
+          <div class="rightWidget">
+            <div class="title">
+              <span class="pull-left"><a href="#"><i class="fa fa-line-chart"></i> </a></span>
+              Dernières dépenses
+            </div>
+            <ul class="sidebar-nav" style="position:relative !important;">
+              <li><a href="#"><b>38€</b> - 2x4GB Kingston 1333Mhz ...</a></li>
+              <li><a href="#"><b>38€</b> - 2x4GB Kingston 1333Mhz ...</a></li>
+              <li><a href="#"><b>38€</b> - 2x4GB Kingston 1333Mhz ...</a></li>
+              <li><a href="#"><b>38€</b> - 2x4GB Kingston 1333Mhz ...</a></li>
+              <li><a href="#"><b>38€</b> - 2x4GB Kingston 1333Mhz ...</a></li>
+            </ul>
+          </div>
+          <div class="rightWidget">
+            <div class="title">
+              <span class="pull-left"><a href="#"><i class="fa fa-star"></i> </a></span>
+              Avis des clients
+            </div>
+            <ul class="sidebar-nav" style="position:relative !important;">
+              <li><a href="#"><b>Peter</b> - Le temps de réparation ...</a></li>
+              <li><a href="#"><b>Peter</b> - Le temps de réparation ...</a></li>
+              <li><a href="#"><b>Peter</b> - Le temps de réparation ...</a></li>
+              <li><a href="#"><b>Peter</b> - Le temps de réparation ...</a></li>
+              <li><a href="#"><b>Peter</b> - Le temps de réparation ...</a></li>
+              <li><a href="#"><b>Peter</b> - Le temps de réparation ...</a></li>
+            </ul>
+          </div>
+        </div>
+  </div>
+
+  <div>Angular seed app: v<span app-version></span></div>
+
+  <!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
+  <script src="bower_components/angular-native-dragdrop/draganddrop.min.js"></script>
+  <script src="app.js"></script>
+
+  <script src="views/dashboard/dashboard.js"></script>
+  <script src="views/stock/stock.js"></script>
+  <script src="views/work/work.js"></script>
+  <script src="views/customersTasks/customersTasks.js"></script>
+  <script src="views/customers/customers.js"></script>
+  <script src="views/management/management.js"></script>
+  <script src="views/myStore/myStore.js"></script>
+  <script src="views/settings/settings.js"></script>
+
+  <script src="components/version/version.js"></script>
+  <script src="components/version/version-directive.js"></script>
+  <script src="components/version/interpolate-filter.js"></script>
+  <script src="services/fileLoader.js"></script>
+</body>
+</html>

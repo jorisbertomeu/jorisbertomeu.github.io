@@ -1,0 +1,210 @@
+/* app css stylesheet */
+
+.utilPanel {
+	width: 100%;
+    bottom: 21px;
+    position: absolute;
+    background-color: #bdc3c7;
+    border: 1px solid black;
+    padding: 10px;
+    z-index: 99999;
+}
+
+.noLink {
+    text-decoration: none;
+    color: #333;
+}
+
+.buildingPanel {
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.buildPanelheader {
+    border: 1px solid #ccc;
+    margin: -6px;
+    border-radius: 3px;
+    padding: 5px;
+    margin-bottom: 5px;
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.buildHardareHeader {
+    padding: 5px;
+    border: 1px solid #ccc;
+    margin: -4px;
+    /* border-radius: 3px; */
+    margin-bottom: 5px;
+    background-color: rgba(0, 0, 0, 0.075);
+}
+
+.build {
+    padding: 4px;
+}
+
+.build-box {
+    border: 3px solid rgba(200, 0, 0, .5);
+    min-height: 280px !important;
+}
+
+.build-hardware {
+    border: 3px solid rgba(44, 62, 80, .5);
+    /* min-height: 80px !important; */
+}
+
+.noLink:hover {
+    text-decoration: none;
+    color: #337ab7;
+}
+
+.clientContainer {
+    border: 1px solid #dcdcdc !important;
+    background-color: #fafafa;
+    border-radius: 5px;
+    padding: 10px;
+    padding-right: 0px !important;
+    width: 200px;
+}
+
+.caretClientContainer {
+    padding-top: 10px;
+    float: right;
+    border-left: 1px solid #CCC;
+    padding-left: 6px;
+    margin-top: -10px;
+    height: 40px;
+    cursor: pointer;
+    width: 20px;
+    border-radius: 0px 5px 5px 0px;
+}
+
+.btn-circle {
+  width: 25px;
+  height: 25px;
+  text-align: center !important;
+  padding: 4px 0 !important;
+  font-size: 12px !important;
+  line-height: 1.428571429 !important;
+  border-radius: 15px !important;
+}
+
+.caretClientContainer:hover {
+    background-color: #EFEFEF;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+
+.greenText {
+    color: green;
+}
+
+.bottomPanel {
+    border-right: 1px solid black;
+    position: fixed;
+    bottom: 0px;
+    padding: 30px;
+    border-top: 1px solid black;
+    width: 72%;
+    background-color: white;
+    text-align: center;
+    z-index: 99999;
+}
+
+.backdrop {
+    z-index: 9999;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .4);
+}
+
+.redText {
+    color: red;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.karma {
+	display: none;
+}
+
+.backdropHardware {
+    position: absolute;
+    background-color: rgba(0, 0, 0, .1);
+    height: 100%;
+    width: 100%;
+}
+
+.closeBackdrop {
+    position: absolute;
+    right: 20px;
+    top: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.hardwareContainer {
+    font-size: 11px;
+    padding: 5px;
+    border: 1px solid #CCC;
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: #fafafa;
+}
+
+.indice75 {
+    color: #27ae60;
+}
+
+.indice50 {
+    color: #f39c12;
+}
+
+.indice25 {
+    color: #d35400;
+}
+
+.indice0 {
+    color: #c0392b;
+}
+
+.rightPanel {
+	background-color: white;
+    position: fixed;
+    right: 0px;
+    color: black;
+    height: 100%;
+    top: 0px;
+    width: 15%;
+    overflow-y: auto;
+}
+
+.rightWidget > .sidebar-nav li a:hover {
+	color: black;
+	background-color: #ecf0f1;
+}
+
+.rightWidget {
+	border: 2px solid #bdc3c7;
+    padding: 5px;
+    margin-bottom: -2px;
+}
+
+.rightWidget > .title {
+	border: 2px solid #bdc3c7;
+    margin: -7px;
+    padding: 5px;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
